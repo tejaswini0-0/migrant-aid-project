@@ -1,0 +1,12 @@
+{
+  "name": "AWAAZ आवाज़ - Voice Legal Aid",
+  "short_name": "AWAAZ",
+  "description": "Voice Legal Aid for Indian Migrant Workers",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#F59E0B",
+  "orientation": "portrait",
+  "categories": ["legal", "social", "utilities"],
+  "lang": "en-IN"
+}
