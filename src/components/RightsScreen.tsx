@@ -4,7 +4,7 @@ import {
   Phone, ChevronDown, ChevronUp, Copy, Check, AlertTriangle,
   Globe, BookOpen
 } from 'lucide-react';
-import { LANG_META, getLangKey } from './languages';
+import { LANG_META, getLangKey } from './Languages';
 
 export interface LawEntry {
   act: string;
