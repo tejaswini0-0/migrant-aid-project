@@ -1,4 +1,4 @@
-const CACHE_NAME = 'awaaz-v1';
+const CACHE_NAME = 'parinama-v1';
 const urlsToCache = [
   '/',
   '/index.html',
