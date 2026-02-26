@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, Check, AlertTriangle, Volume2, Globe } from 'lucide-react';
-import { LANG_META, getLangKey } from './languages';
+import { LANG_META, getLangKey } from './Languages';
 
 interface EvidenceScreenProps {
   onBack: () => void;
