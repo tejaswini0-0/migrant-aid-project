@@ -165,7 +165,7 @@ function useTTS(defaultLang = 'en-IN') {
     u.onstart = () => setPlayingId(id);
     u.onend = () => setPlayingId(null);
     u.onerror = () => {
-      console.warn(`TTS error for language ${targetLang}:`, u.error);
+      console.warn(`TTS error for language ${targetLang}:`, u.onerror);
       setPlayingId(null);
     };
     
