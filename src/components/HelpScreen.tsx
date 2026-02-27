@@ -83,21 +83,66 @@ const WORKER_RIGHTS = [
 
 // ─── TTS hook — picks correct language voice, falls back gracefully ───────────
 
+// Language code mapping to help with TTS voice selection
+const LANGUAGE_VOICE_MAP: { [key: string]: string[] } = {
+  'hi': ['hi-IN', 'hi', 'hin', 'en-IN', 'en'],           // Hindi
+  'ta': ['ta-IN', 'ta', 'tam', 'en-IN', 'en'],           // Tamil
+  'te': ['te-IN', 'te', 'tel', 'en-IN', 'en'],           // Telugu
+  'kn': ['kn-IN', 'kn', 'kan', 'en-IN', 'en'],           // Kannada
+  'bn': ['bn-IN', 'bn', 'ben', 'en-IN', 'en'],           // Bengali
+  'mr': ['mr-IN', 'mr', 'mar', 'en-IN', 'en'],           // Marathi
+  'gu': ['gu-IN', 'gu', 'guj', 'en-IN', 'en'],           // Gujarati
+  'en': ['en-IN', 'en-US', 'en-GB', 'en'],                 // English
+};
+
 function useTTS(defaultLang = 'en-IN') {
   const [playingId, setPlayingId] = useState<string | null>(null);
+  const [voicesLoaded, setVoicesLoaded] = useState(false);
   const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
+
+  // Ensure voices are loaded on component mount
+  useEffect(() => {
+    if (!supported) return;
+    const loadVoices = () => setVoicesLoaded(true);
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    if (window.speechSynthesis.getVoices().length > 0) {
+      setVoicesLoaded(true);
+    }
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null as any;
+    };
+  }, [supported]);
 
   // Pick the best available voice for a given BCP-47 lang code
   const getBestVoice = useCallback((lang: string): SpeechSynthesisVoice | null => {
     if (!supported) return null;
+    
     const voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) return null;
+    
     const langBase = lang.split('-')[0];
-    // Prefer exact match, then prefix match, then any voice
-    return (
-      voices.find(v => v.lang === lang) ??
-      voices.find(v => v.lang.startsWith(langBase)) ??
-      null
-    );
+    
+    // Use language map for fallback chain
+    const fallbackChain = LANGUAGE_VOICE_MAP[langBase] || [lang, langBase, 'en'];
+    
+    // Try each language in the fallback chain
+    for (const tryLang of fallbackChain) {
+      // Try exact match
+      const exact = voices.find(v => v.lang === tryLang);
+      if (exact) return exact;
+      
+      // Try prefix match (e.g., 'hi' matches 'hi-IN')
+      const prefix = voices.find(v => v.lang.startsWith(tryLang));
+      if (prefix) return prefix;
+      
+      // Try base language match
+      const base = tryLang.split('-')[0];
+      const baseLang = voices.find(v => v.lang.split('-')[0] === base);
+      if (baseLang) return baseLang;
+    }
+    
+    // Last resort: return any voice
+    return voices.length > 0 ? voices[0] : null;
   }, [supported]);
 
   const speak = useCallback((id: string, text: string, lang?: string) => {
@@ -105,16 +150,34 @@ function useTTS(defaultLang = 'en-IN') {
     window.speechSynthesis.cancel();
     if (playingId === id) { setPlayingId(null); return; }
     const targetLang = lang ?? defaultLang;
-    const u = new SpeechSynthesisUtterance(text);
+    
+    // Extract only the first paragraph for TTS (regional language part, not English)
+    const textToSpeak = text.split('--- English ---')[0].trim();
+    
+    const u = new SpeechSynthesisUtterance(textToSpeak);
     u.lang = targetLang;
-    u.rate = 0.84;
+    u.rate = 0.9;  // Slightly faster for better clarity
+    u.pitch = 1;
+    
     const voice = getBestVoice(targetLang);
     if (voice) u.voice = voice;
+    
     u.onstart = () => setPlayingId(id);
     u.onend = () => setPlayingId(null);
-    u.onerror = () => setPlayingId(null);
+    u.onerror = () => {
+      console.warn(`TTS error for language ${targetLang}:`, u.error);
+      setPlayingId(null);
+    };
+    
     // Chrome needs a short delay after cancel() before speak()
-    setTimeout(() => window.speechSynthesis.speak(u), 80);
+    setTimeout(() => {
+      try {
+        window.speechSynthesis.speak(u);
+      } catch (e) {
+        console.warn('Speech synthesis error:', e);
+        setPlayingId(null);
+      }
+    }, 100);
   }, [playingId, defaultLang, supported, getBestVoice]);
 
   const stop = useCallback(() => {
@@ -184,50 +247,8 @@ function useVoiceInput(langCode = 'en-IN') {
   return { listening, liveText, start, stop, supported: !!SR };
 }
 
-// ─── Claude API — requires VITE_ANTHROPIC_API_KEY in your .env / Vercel env vars
+// ─── Groq API — requires VITE_GROQ_API_KEY in your .env / Vercel env vars
 
-const SYSTEM_PROMPT = `You are AWAAZ Legal Assistant — a free AI helping Indian migrant and construction workers understand their labour rights in India.
-
-Rules:
-- Keep answers to 3–6 sentences unless a step-by-step is needed
-- Use simple plain language; avoid jargon or explain it immediately  
-- For physical danger ALWAYS say: call 100 (police) immediately first
-- Respond in the SAME language the user writes in
-- You are expert in: Payment of Wages Act 1936, BOCW Act 1996, Contract Labour Act 1970, Minimum Wages Act 1948, Employees Compensation Act 1923, Bonded Labour Act 1976, POSH Act 2013, Maternity Benefit Act 1961, Equal Remuneration Act 1976, IPC Sections 323/324/506, Industrial Employment Act`;
-
-async function askClaude(msgs: { role: string; content: string }[]): Promise<string> {
-  const apiKey = (import.meta as any).env?.VITE_ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    throw new Error('API key not configured. Add VITE_ANTHROPIC_API_KEY to your Vercel Environment Variables (Settings → Environment Variables), then redeploy.');
-  }
-
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      system: SYSTEM_PROMPT,
-      messages: msgs,
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    const msg = (err as any)?.error?.message ?? '';
-    if (res.status === 401) throw new Error('Invalid API key. Check VITE_ANTHROPIC_API_KEY in Vercel → Settings → Environment Variables.');
-    if (res.status === 429) throw new Error('Too many requests — please wait a moment and try again.');
-    throw new Error(msg || `API error ${res.status}`);
-  }
-
-  const data = await res.json();
-  return data.content?.[0]?.text ?? 'No response received. Please try again.';
-}
 
 // ─── ChatBot component ────────────────────────────────────────────────────────
 
@@ -474,6 +495,39 @@ function FAQItem({ q, a, idx, langCode }: { q: string; a: string; idx: number; l
   );
 }
 
+// ─── Worker Rights Card with TTS ─────────────────────────────────────────────
+
+function WorkerRightsCard({ langCode }: { langCode?: string }) {
+  const tts = useTTS(langCode ?? 'en-IN');
+  const rightsText = WORKER_RIGHTS.join('. ');
+
+  return (
+    <div className="mt-2 bg-[#1E293B] rounded-xl border border-gray-700 p-4">
+      <div className="flex items-center gap-2 mb-3 justify-between">
+        <div className="flex items-center gap-2">
+          <Shield className="w-4 h-4 text-[#F59E0B]" />
+          <p className="text-white font-semibold text-sm">Your Fundamental Rights as a Worker</p>
+        </div>
+        {tts.supported && (
+          <button onClick={() => tts.speak('worker-rights', rightsText, langCode)}
+            className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-gray-200 transition-colors">
+            {tts.isPlaying('worker-rights')
+              ? <><Square className="w-3 h-3 fill-current" /> Stop</>
+              : <><Volume2 className="w-3 h-3" /> Listen</>}
+          </button>
+        )}
+      </div>
+      <ul className="space-y-2">
+        {WORKER_RIGHTS.map((r, i) => (
+          <li key={i} className="flex items-start gap-2 text-gray-300 text-xs">
+            <span className="text-[#22C55E] mt-0.5 shrink-0">✓</span>{r}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 // ─── Main screen ──────────────────────────────────────────────────────────────
 
 export default function HelpScreen({ userLanguage, languageCode }: HelpScreenProps) {
@@ -516,19 +570,7 @@ export default function HelpScreen({ userLanguage, languageCode }: HelpScreenPro
             ))}
 
             {/* Rights summary card */}
-            <div className="mt-2 bg-[#1E293B] rounded-xl border border-gray-700 p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Shield className="w-4 h-4 text-[#F59E0B]" />
-                <p className="text-white font-semibold text-sm">Your Fundamental Rights as a Worker</p>
-              </div>
-              <ul className="space-y-2">
-                {WORKER_RIGHTS.map((r, i) => (
-                  <li key={i} className="flex items-start gap-2 text-gray-300 text-xs">
-                    <span className="text-[#22C55E] mt-0.5 shrink-0">✓</span>{r}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <WorkerRightsCard langCode={languageCode} />
           </div>
         )}
 
@@ -611,4 +653,60 @@ export default function HelpScreen({ userLanguage, languageCode }: HelpScreenPro
       </div>
     </div>
   );
+}
+async function askClaude(msgs: { role: string; content: string }[]): Promise<string> {
+  const SYSTEM_PROMPT = `You are AWAAZ Legal Assistant — a free AI helping Indian migrant and construction workers understand their labour rights in India.
+
+Rules:
+- Keep answers to 3–6 sentences unless a step-by-step is needed
+- Use simple plain language; avoid jargon or explain it immediately  
+- For physical danger ALWAYS say: call 100 (police) immediately first
+- BILINGUAL FORMAT: If user writes in regional language (Hindi/Tamil/Telugu/Kannada/Bengali), respond FIRST in that regional language, then add a blank line, then add English translation with format "--- English ---" followed by English version
+- You are expert in: Payment of Wages Act 1936, BOCW Act 1996, Contract Labour Act 1970, Minimum Wages Act 1948, Employees Compensation Act 1923, Bonded Labour Act 1976, POSH Act 2013, Maternity Benefit Act 1961, Equal Remuneration Act 1976, IPC Sections 323/324/506, Industrial Employment Act`;
+
+  const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined;
+  if (!apiKey || apiKey.trim() === '') {
+    throw new Error(
+      'Groq API key not configured.\n\n' +
+      '📍 Get free API key at: https://console.groq.com\n\n' +
+      '📍 Locally: Create/edit .env.local in your project root with:\n' +
+      'VITE_GROQ_API_KEY=gsk_your-groq-key-here\n\n' +
+      '📍 Vercel: Dashboard → Settings → Environment Variables → Add VITE_GROQ_API_KEY → Redeploy'
+    );
+  }
+
+  // Add system prompt as first message
+  const messagesWithSystem = [
+    { role: 'system' as const, content: SYSTEM_PROMPT },
+    ...msgs.map(m => ({
+      role: m.role as 'user' | 'assistant',
+      content: m.content,
+    })),
+  ];
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey.trim()}`,
+    },
+    body: JSON.stringify({
+      model: 'llama-3.1-8b-instant',
+      max_tokens: 1000,
+      messages: messagesWithSystem,
+      temperature: 0.7,
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const msg = (err as any)?.error?.message ?? '';
+    if (res.status === 401) throw new Error('Invalid Groq API key. Get a free key at https://console.groq.com and add it to Vercel Settings → Environment Variables → VITE_GROQ_API_KEY.');
+    if (res.status === 429) throw new Error('Rate limit reached — please wait a moment and try again.');
+    if (res.status === 403) throw new Error('API access denied. Check your Groq API key at https://console.groq.com.');
+    throw new Error(msg || `Groq API error ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content ?? 'No response received. Please try again.';
 }
