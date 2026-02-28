@@ -6,7 +6,7 @@ interface LandingScreenProps {
   selectedLanguage: string | null;
 }
 
-const languages = [
+const SUPPORTED_LANGUAGES = [
   { name: 'Hindi', native: 'हिंदी', bcp47: 'hi-IN' },
   { name: 'Bengali', native: 'বাংলা', bcp47: 'bn-IN' },
   { name: 'Tamil', native: 'தமிழ்', bcp47: 'ta-IN' },
@@ -21,10 +21,9 @@ const languages = [
   { name: 'Bhojpuri', native: 'भोजपुरी', bcp47: 'hi-IN' },
 ];
 
-export { languages };
 
 export default function LandingScreen({ onLanguageSelect, onRecordClick, selectedLanguage }: LandingScreenProps) {
-  const selected = languages.find(l => l.name === selectedLanguage);
+  const selected = SUPPORTED_LANGUAGES.find(l => l.name === selectedLanguage);
 
   return (
     <div className="min-h-screen bg-[#0F172A] pb-24">
@@ -33,7 +32,7 @@ export default function LandingScreen({ onLanguageSelect, onRecordClick, selecte
         <div className="flex items-center justify-center gap-3 mb-2">
           <Scale className="w-9 h-9 text-[#F59E0B]" strokeWidth={2} />
           <h1 className="text-4xl font-bold text-white tracking-tight">
-            AWAAZ <span className="text-[#F59E0B]">XYZ</span>
+            AWAAZ <span className="text-[#F59E0B]">For Justice</span>
           </h1>
           <span className="px-2 py-0.5 text-[10px] font-bold text-[#F59E0B] bg-[#F59E0B]/10 rounded-full border border-[#F59E0B]/30 self-start mt-1">
             BETA
@@ -74,7 +73,7 @@ export default function LandingScreen({ onLanguageSelect, onRecordClick, selecte
       {/* Language Selection */}
       <div className="px-4 mb-6">
         <h2 className="text-white font-semibold text-base mb-1">
-          भाषा चुनें / Select Language
+          Select Language
         </h2>
         {selected && (
           <p className="text-[#F59E0B] text-xs mb-3">
@@ -82,7 +81,7 @@ export default function LandingScreen({ onLanguageSelect, onRecordClick, selecte
           </p>
         )}
         <div className="grid grid-cols-3 gap-2.5">
-          {languages.map((lang) => (
+          {SUPPORTED_LANGUAGES.map((lang) => (
             <button
               key={lang.name}
               onClick={() => onLanguageSelect(lang.name)}

@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   ArrowLeft, Scale, FileText, Volume2, Download, Send, MapPin,
   Phone, ChevronDown, ChevronUp, Copy, Check, AlertTriangle,
   Globe, BookOpen, Square
 } from 'lucide-react';
 import { LANG_META, getLangKey } from './Languages';
+import { TTSEngine } from './tts';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -34,58 +35,26 @@ interface RightsScreenProps {
   analysis: AnalysisResult | null;
 }
 
-// ─── TTS — picks the correct language voice from the browser's voice list ─────
+// ─── TTS hook — wraps TTSEngine, triggers re-render on state changes ─────────
 
 function useTTS() {
-  const [playingId, setPlayingId] = useState<string | null>(null);
-  const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
+  const [, forceRender] = useState(0);
+  const engineRef = useRef<TTSEngine | null>(null);
+  if (!engineRef.current) engineRef.current = new TTSEngine();
+  const engine = engineRef.current;
 
-  // Load voices — Chrome loads them async, Safari loads sync
-  const getVoice = useCallback((lang: string): SpeechSynthesisVoice | null => {
-    if (!supported) return null;
-    const voices = window.speechSynthesis.getVoices();
-    const base = lang.split('-')[0];
-    return (
-      voices.find(v => v.lang === lang) ??
-      voices.find(v => v.lang.startsWith(base + '-')) ??
-      voices.find(v => v.lang.startsWith(base)) ??
-      null
-    );
-  }, [supported]);
-
-  const speak = useCallback((id: string, text: string, bcp47: string) => {
-    if (!supported) return;
-    window.speechSynthesis.cancel();
-    if (playingId === id) { setPlayingId(null); return; }
-
-    const doSpeak = () => {
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = bcp47;
-      u.rate = 0.84;
-      const v = getVoice(bcp47);
-      if (v) u.voice = v;
-      u.onstart = () => setPlayingId(id);
-      u.onend = () => setPlayingId(null);
-      u.onerror = () => setPlayingId(null);
-      window.speechSynthesis.speak(u);
-    };
-
-    // Chrome needs a brief gap after cancel() for non-English voices
-    setTimeout(doSpeak, 80);
-  }, [playingId, supported, getVoice]);
-
-  const stop = useCallback(() => {
-    if (supported) window.speechSynthesis.cancel();
-    setPlayingId(null);
-  }, [supported]);
-
-  useEffect(() => () => { if (supported) window.speechSynthesis.cancel(); }, []);
+  useEffect(() => {
+    const unsub = engine.subscribe(() => forceRender(n => n + 1));
+    return () => { unsub(); engine.stop(); };
+  }, []);
 
   return {
-    speak, stop,
-    isPlaying: (id: string) => playingId === id,
-    anyPlaying: playingId !== null,
-    supported,
+    // speak() is async — call without await so it doesn't block event handlers
+    speak: (id: string, text: string, bcp47: string) => { engine.speak(id, text, bcp47); },
+    stop: () => engine.stop(),
+    isPlaying: (id: string) => engine.isPlaying(id),
+    anyPlaying: engine.anyPlaying,
+    supported: engine.isSupported,
   };
 }
 

@@ -15,7 +15,7 @@ interface Message {
   text: string;
 }
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+// ─── Static data ──────────────────────────────────────────────────────────────
 
 const EMERGENCY = [
   { label: 'Labour Helpline',  number: '1800-11-2229', color: '#F59E0B', desc: 'National labour grievance — free, 24/7' },
@@ -26,46 +26,16 @@ const EMERGENCY = [
 ];
 
 const FAQ = [
-  {
-    q: 'What minimum wage am I entitled to?',
-    a: 'Minimum wages are set by each state and vary by type of work. For unskilled construction, most states set ₹400–700/day (2024). No contract can reduce this — it is a legal floor. Call 1800-11-2229 or visit your state Labour Department to find your exact rate.',
-  },
-  {
-    q: 'My employer took my Aadhaar card. What do I do?',
-    a: 'This is a serious criminal offence. Confiscating documents to stop you from leaving is bonded labour under the Bonded Labour Act, 1976 — non-bailable. Immediately: (1) File an FIR at the nearest police station — they cannot refuse, (2) Contact the District Magistrate, (3) Call 1800-11-2229.',
-  },
-  {
-    q: 'Can I file a complaint without a lawyer?',
-    a: 'Yes — completely free. You do not need a lawyer to file a wage complaint with the Labour Commissioner. Submit evidence (bank messages, site photos), and the Commissioner summons the employer to a hearing within ~30 days. AWAAZ generates this letter automatically.',
-  },
-  {
-    q: 'What evidence do I need?',
-    a: '(1) Photo of site signboard — shows contractor name and licence, (2) UPI/bank screenshots showing payment history, (3) Voice note from a coworker who witnessed your work, (4) Any written work orders or gate passes, (5) Contractor\'s vehicle number plate.',
-  },
-  {
-    q: 'My employer is threatening me after I complained.',
-    a: 'Threatening a worker for filing a complaint is called victimisation — illegal under labour laws. Document every threat with date, time, and witnesses. Report to the Labour Commissioner in writing AND to police under IPC Section 506 (criminal intimidation).',
-  },
-  {
-    q: 'I was injured at the worksite — what am I owed?',
-    a: "Under the Employees' Compensation Act, 1923, any work injury entitles you to compensation regardless of fault. Get a written medical report from a government hospital and file a claim with the Commissioner for Employees' Compensation in your district.",
-  },
-  {
-    q: 'What is the BOCW Act?',
-    a: "The Building & Other Construction Workers Act, 1996 covers you if you work in construction. Your employer must provide free safety equipment, safe scaffolding, wages on time, and accident compensation. Register with your state's BOCW Welfare Board for housing, education scholarships, and medical aid.",
-  },
-  {
-    q: 'Can my employer deduct money from my wages?',
-    a: 'Only legal deductions: absence, damage you caused (after formal inquiry), employer housing, advances you requested, and PF/ESI. Deductions for tools, transport, or food are illegal. File a complaint under the Payment of Wages Act if this happens.',
-  },
-  {
-    q: 'What extra rights do women workers have?',
-    a: 'Women workers have: (1) Equal pay for equal work (Equal Remuneration Act, 1976), (2) Protection from sexual harassment — POSH Act requires every employer with 10+ workers to have a complaints committee, (3) 26 weeks paid maternity leave, (4) No forced night shifts without consent.',
-  },
-  {
-    q: 'Can my employer dismiss me without notice?',
-    a: "Workers who have worked 240+ days cannot be dismissed without 30 days' written notice (or 1 month's wages instead), a written reason, and a chance to respond. Sudden dismissal without this is illegal — file for reinstatement or compensation at the Labour Commissioner.",
-  },
+  { q: 'What minimum wage am I entitled to?', a: 'Minimum wages are set by each state and vary by type of work. For unskilled construction, most states set ₹400–700/day (2024). No contract can reduce this — it is a legal floor. Call 1800-11-2229 or visit your state Labour Department to find your exact rate.' },
+  { q: 'My employer took my Aadhaar card. What do I do?', a: 'This is a serious criminal offence. Confiscating documents to stop you from leaving is bonded labour under the Bonded Labour Act, 1976 — non-bailable. Immediately: (1) File an FIR at the nearest police station — they cannot refuse, (2) Contact the District Magistrate, (3) Call 1800-11-2229.' },
+  { q: 'Can I file a complaint without a lawyer?', a: 'Yes — completely free. You do not need a lawyer to file a wage complaint with the Labour Commissioner. Submit evidence (bank messages, site photos), and the Commissioner summons the employer to a hearing within ~30 days. AWAAZ generates this letter automatically.' },
+  { q: 'What evidence do I need?', a: "(1) Photo of site signboard — shows contractor name and licence, (2) UPI/bank screenshots showing payment history, (3) Voice note from a coworker who witnessed your work, (4) Any written work orders or gate passes, (5) Contractor's vehicle number plate." },
+  { q: 'My employer is threatening me after I complained.', a: 'Threatening a worker for filing a complaint is called victimisation — illegal under labour laws. Document every threat with date, time, and witnesses. Report to the Labour Commissioner in writing AND to police under IPC Section 506 (criminal intimidation).' },
+  { q: "I was injured at the worksite — what am I owed?", a: "Under the Employees' Compensation Act, 1923, any work injury entitles you to compensation regardless of fault. Get a written medical report from a government hospital and file a claim with the Commissioner for Employees' Compensation in your district." },
+  { q: 'What is the BOCW Act?', a: "The Building & Other Construction Workers Act, 1996 covers you if you work in construction. Your employer must provide free safety equipment, safe scaffolding, wages on time, and accident compensation. Register with your state's BOCW Welfare Board for housing, education scholarships, and medical aid." },
+  { q: 'Can my employer deduct money from my wages?', a: 'Only legal deductions: absence, damage you caused (after formal inquiry), employer housing, advances you requested, and PF/ESI. Deductions for tools, transport, or food are illegal. File a complaint under the Payment of Wages Act if this happens.' },
+  { q: 'What extra rights do women workers have?', a: 'Women workers have: (1) Equal pay for equal work (Equal Remuneration Act, 1976), (2) Protection from sexual harassment — POSH Act requires every employer with 10+ workers to have a complaints committee, (3) 26 weeks paid maternity leave, (4) No forced night shifts without consent.' },
+  { q: "Can my employer dismiss me without notice?", a: "Workers who have worked 240+ days cannot be dismissed without 30 days' written notice (or 1 month's wages instead), a written reason, and a chance to respond. Sudden dismissal is illegal — file for reinstatement or compensation at the Labour Commissioner." },
 ];
 
 const WORKER_RIGHTS = [
@@ -81,128 +51,156 @@ const WORKER_RIGHTS = [
   'BOCW Welfare Board benefits if you work in construction',
 ];
 
-// ─── TTS hook — picks correct language voice, falls back gracefully ───────────
+// ─── 1. Groq API ──────────────────────────────────────────────────────────────
+// MUST be defined before ChatBot which calls it.
 
-// Language code mapping to help with TTS voice selection
-const LANGUAGE_VOICE_MAP: { [key: string]: string[] } = {
-  'hi': ['hi-IN', 'hi', 'hin', 'en-IN', 'en'],           // Hindi
-  'ta': ['ta-IN', 'ta', 'tam', 'en-IN', 'en'],           // Tamil
-  'te': ['te-IN', 'te', 'tel', 'en-IN', 'en'],           // Telugu
-  'kn': ['kn-IN', 'kn', 'kan', 'en-IN', 'en'],           // Kannada
-  'bn': ['bn-IN', 'bn', 'ben', 'en-IN', 'en'],           // Bengali
-  'mr': ['mr-IN', 'mr', 'mar', 'en-IN', 'en'],           // Marathi
-  'gu': ['gu-IN', 'gu', 'guj', 'en-IN', 'en'],           // Gujarati
-  'en': ['en-IN', 'en-US', 'en-GB', 'en'],                 // English
+const SYSTEM_PROMPT = `You are AWAAZ Legal Assistant — a free AI helping Indian migrant and construction workers understand their labour rights in India.
+
+Rules:
+- Keep answers to 3–6 sentences unless a step-by-step is needed
+- Use simple plain language; avoid jargon or explain it immediately
+- For physical danger ALWAYS say: call 100 (police) immediately first
+- BILINGUAL FORMAT: If user writes in a regional language (Hindi/Tamil/Telugu/Kannada/Bengali/Marathi/Gujarati/Punjabi), respond FIRST in that regional language, then add a blank line, then "--- English ---" followed by the English translation
+- You are expert in: Payment of Wages Act 1936, BOCW Act 1996, Contract Labour Act 1970, Minimum Wages Act 1948, Employees Compensation Act 1923, Bonded Labour Act 1976, POSH Act 2013, Maternity Benefit Act 1961, Equal Remuneration Act 1976, IPC Sections 323/324/506, Industrial Employment Act`;
+
+async function askGroq(msgs: { role: string; content: string }[]): Promise<string> {
+  const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined;
+  if (!apiKey?.trim()) {
+    throw new Error(
+      'Groq API key not configured.\n\n' +
+      '📍 Get a free key at: https://console.groq.com\n\n' +
+      '📍 Locally: create .env.local in your project root:\n' +
+      'VITE_GROQ_API_KEY=gsk_...\n\n' +
+      '📍 Vercel: Settings → Environment Variables → add VITE_GROQ_API_KEY → Redeploy'
+    );
+  }
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey.trim()}`,
+    },
+    body: JSON.stringify({
+      model: 'llama-3.1-8b-instant',
+      max_tokens: 1000,
+      temperature: 0.7,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...msgs.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content })),
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const msg = (err as any)?.error?.message ?? '';
+    if (res.status === 401) throw new Error('Invalid Groq API key. Check it at https://console.groq.com');
+    if (res.status === 429) throw new Error('Rate limit reached — please wait a moment and try again.');
+    throw new Error(msg || `Groq API error ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content ?? 'No response received. Please try again.';
+}
+
+// ─── 2. TTS hook ──────────────────────────────────────────────────────────────
+// Uses Web Speech API with proper async voice loading.
+// The key fixes vs the broken version:
+//   • Waits for voiceschanged before selecting a voice (Chrome async quirk)
+//   • Sets u.lang even when no exact voice found — browser picks nearest
+//   • 80ms delay after cancel() before first speak() — Chrome bug workaround
+//   • Sentence-by-sentence for long text — avoids silent truncation
+
+const LANG_BCP47_MAP: Record<string, string> = {
+  hi: 'hi-IN', kn: 'kn-IN', ta: 'ta-IN', te: 'te-IN',
+  bn: 'bn-IN', mr: 'mr-IN', gu: 'gu-IN', pa: 'pa-IN', en: 'en-IN',
 };
+
+function normLang(raw: string) {
+  const base = raw.split('-')[0].toLowerCase();
+  return LANG_BCP47_MAP[base] ?? raw;
+}
+
+function getVoicesReady(): Promise<SpeechSynthesisVoice[]> {
+  return new Promise(resolve => {
+    const v = window.speechSynthesis.getVoices();
+    if (v.length > 0) { resolve(v); return; }
+    const h = () => { resolve(window.speechSynthesis.getVoices()); window.speechSynthesis.removeEventListener('voiceschanged', h); };
+    window.speechSynthesis.addEventListener('voiceschanged', h);
+    setTimeout(() => resolve(window.speechSynthesis.getVoices()), 1200);
+  });
+}
+
+function splitSentences(text: string): string[] {
+  return text.split(/(?<=[।.!?])\s+/).filter(Boolean).length
+    ? text.split(/(?<=[।.!?])\s+/).filter(Boolean)
+    : [text];
+}
 
 function useTTS(defaultLang = 'en-IN') {
   const [playingId, setPlayingId] = useState<string | null>(null);
-  const [voicesLoaded, setVoicesLoaded] = useState(false);
+  const cancelledRef = useRef(false);
   const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
 
-  // Ensure voices are loaded on component mount
-  useEffect(() => {
-    if (!supported) return;
-    const loadVoices = () => setVoicesLoaded(true);
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-    if (window.speechSynthesis.getVoices().length > 0) {
-      setVoicesLoaded(true);
-    }
-    return () => {
-      window.speechSynthesis.onvoiceschanged = null as any;
-    };
-  }, [supported]);
+  useEffect(() => () => {
+    cancelledRef.current = true;
+    if (supported) window.speechSynthesis.cancel();
+  }, []);
 
-  // Pick the best available voice for a given BCP-47 lang code
-  const getBestVoice = useCallback((lang: string): SpeechSynthesisVoice | null => {
-    if (!supported) return null;
-    
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length === 0) return null;
-    
-    const langBase = lang.split('-')[0];
-    
-    // Use language map for fallback chain
-    const fallbackChain = LANGUAGE_VOICE_MAP[langBase] || [lang, langBase, 'en'];
-    
-    // Try each language in the fallback chain
-    for (const tryLang of fallbackChain) {
-      // Try exact match
-      const exact = voices.find(v => v.lang === tryLang);
-      if (exact) return exact;
-      
-      // Try prefix match (e.g., 'hi' matches 'hi-IN')
-      const prefix = voices.find(v => v.lang.startsWith(tryLang));
-      if (prefix) return prefix;
-      
-      // Try base language match
-      const base = tryLang.split('-')[0];
-      const baseLang = voices.find(v => v.lang.split('-')[0] === base);
-      if (baseLang) return baseLang;
-    }
-    
-    // Last resort: return any voice
-    return voices.length > 0 ? voices[0] : null;
-  }, [supported]);
-
-  const speak = useCallback((id: string, text: string, lang?: string) => {
-    if (!supported) return;
-    window.speechSynthesis.cancel();
-    if (playingId === id) { setPlayingId(null); return; }
-    const targetLang = lang ?? defaultLang;
-    
-    // Extract only the first paragraph for TTS (regional language part, not English)
-    const textToSpeak = text.split('--- English ---')[0].trim();
-    
-    const u = new SpeechSynthesisUtterance(textToSpeak);
-    u.lang = targetLang;
-    u.rate = 0.9;  // Slightly faster for better clarity
-    u.pitch = 1;
-    
-    const voice = getBestVoice(targetLang);
-    if (voice) u.voice = voice;
-    
-    u.onstart = () => setPlayingId(id);
-    u.onend = () => setPlayingId(null);
-    u.onerror = () => {
-      console.warn(`TTS error for language ${targetLang}:`, u.onerror);
-      setPlayingId(null);
-    };
-    
-    // Chrome needs a short delay after cancel() before speak()
-    setTimeout(() => {
-      try {
-        window.speechSynthesis.speak(u);
-      } catch (e) {
-        console.warn('Speech synthesis error:', e);
-        setPlayingId(null);
-      }
-    }, 100);
-  }, [playingId, defaultLang, supported, getBestVoice]);
-
-  const stop = useCallback(() => {
+  function stop() {
+    cancelledRef.current = true;
     if (supported) window.speechSynthesis.cancel();
     setPlayingId(null);
-  }, [supported]);
+  }
 
-  useEffect(() => () => { if (supported) window.speechSynthesis.cancel(); }, []);
+  async function speak(id: string, rawText: string, lang?: string) {
+    if (!supported) return;
+    if (playingId === id) { stop(); return; }
+    stop();
+    cancelledRef.current = false;
 
-  return {
-    speak, stop,
-    isPlaying: (id: string) => playingId === id,
-    anyPlaying: playingId !== null,
-    supported,
-  };
+    const text = rawText.split('--- English ---')[0].trim();
+    if (!text) return;
+
+    const bcp47 = normLang(lang ?? defaultLang);
+    const sentences = splitSentences(text);
+    const voices = await getVoicesReady();
+    const base = bcp47.split('-')[0];
+    const voice = voices.find(v => v.lang === bcp47)
+      ?? voices.find(v => v.lang.startsWith(base + '-'))
+      ?? voices.find(v => v.lang.startsWith(base))
+      ?? undefined;
+
+    if (cancelledRef.current) return;
+    setPlayingId(id);
+
+    for (let i = 0; i < sentences.length; i++) {
+      if (cancelledRef.current) break;
+      await new Promise<void>(resolve => {
+        const u = new SpeechSynthesisUtterance(sentences[i]);
+        u.lang = bcp47;
+        u.rate = 0.88;
+        u.pitch = 1;
+        u.volume = 1;
+        if (voice) u.voice = voice;
+        u.onend = () => resolve();
+        u.onerror = (e) => { if (e.error !== 'interrupted') console.warn('TTS:', e.error); resolve(); };
+        setTimeout(() => { if (!cancelledRef.current) window.speechSynthesis.speak(u); else resolve(); }, i === 0 ? 80 : 0);
+      });
+    }
+    if (!cancelledRef.current) setPlayingId(null);
+  }
+
+  return { speak, stop, isPlaying: (id: string) => playingId === id, anyPlaying: playingId !== null, supported };
 }
-
-// ─── Voice input hook for chat ────────────────────────────────────────────────
+// ─── 3. Voice input hook ──────────────────────────────────────────────────────
 
 function useVoiceInput(langCode = 'en-IN') {
   const [listening, setListening] = useState(false);
   const [liveText, setLiveText] = useState('');
   const recRef = useRef<any>(null);
   const accumRef = useRef('');
-
   const SR = typeof window !== 'undefined'
     ? ((window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition)
     : null;
@@ -223,10 +221,7 @@ function useVoiceInput(langCode = 'en-IN') {
       }
       setLiveText(accumRef.current + interim);
     };
-    r.onerror = (e: any) => {
-      if (e.error !== 'aborted') setListening(false);
-    };
-    // Keep alive on end
+    r.onerror = (e: any) => { if (e.error !== 'aborted') setListening(false); };
     r.onend = () => { if (recRef.current) { try { r.start(); } catch {} } };
     r.start();
     recRef.current = r;
@@ -235,7 +230,7 @@ function useVoiceInput(langCode = 'en-IN') {
 
   const stop = useCallback((): string => {
     const ref = recRef.current;
-    recRef.current = null; // clear first so onend doesn't restart
+    recRef.current = null;
     if (ref) { try { ref.abort(); } catch {} }
     setListening(false);
     const result = accumRef.current.trim();
@@ -247,13 +242,10 @@ function useVoiceInput(langCode = 'en-IN') {
   return { listening, liveText, start, stop, supported: !!SR };
 }
 
-// ─── Groq API — requires VITE_GROQ_API_KEY in your .env / Vercel env vars
-
-
-// ─── ChatBot component ────────────────────────────────────────────────────────
+// ─── 4. ChatBot component ─────────────────────────────────────────────────────
 
 const QUICK_PROMPTS = [
-  'My wages haven\'t been paid',
+  "My wages haven't been paid",
   'My documents were taken',
   'I was injured at work',
   'My employer is threatening me',
@@ -264,10 +256,9 @@ const QUICK_PROMPTS = [
 function ChatBot({ userLanguage, languageCode }: { userLanguage?: string; languageCode?: string }) {
   const tts = useTTS(languageCode ?? 'en-IN');
   const voice = useVoiceInput(languageCode ?? 'en-IN');
-
   const [msgs, setMsgs] = useState<Message[]>([{
     id: 'w0', role: 'assistant',
-    text: `Hello! I'm the AWAAZ legal assistant — ask me anything about your rights as a worker in India.\n\nYou can type OR tap 🎙 to speak your question. I respond in your language automatically, and read my replies aloud.\n\nExamples:\n• "मेरी मजदूरी 3 महीने से नहीं मिली"\n• "Is it legal to keep my Aadhaar?"\n• "ನನ್ನ ಸಂಬಳ ಕೊಡ್ತಿಲ್ಲ — ಏನ್ ಮಾಡಲಿ?"`,
+    text: "Hello! I'm the AWAAZ legal assistant — ask me anything about your rights as a worker in India.\n\nYou can type OR tap 🎙 to speak. Replies are read aloud automatically in your language.\n\nExamples:\n• \"मेरी मजदूरी 3 महीने से नहीं मिली\"\n• \"Is it legal to keep my Aadhaar?\"\n• \"ನನ್ನ ಸಂಬಳ ಕೊಡ್ತಿಲ್ಲ — ಏನ್ ಮಾಡಲಿ?\"",
   }]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -276,20 +267,11 @@ function ChatBot({ userLanguage, languageCode }: { userLanguage?: string; langua
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs, loading]);
-
-  // Mirror live voice transcript into the input box while listening
-  useEffect(() => {
-    if (voice.listening) setInput(voice.liveText);
-  }, [voice.liveText, voice.listening]);
+  useEffect(() => { if (voice.listening) setInput(voice.liveText); }, [voice.liveText, voice.listening]);
 
   const toggleVoice = () => {
-    if (voice.listening) {
-      const final = voice.stop();
-      setInput(final || input);
-      inputRef.current?.focus();
-    } else {
-      voice.start();
-    }
+    if (voice.listening) { setInput(voice.stop() || input); inputRef.current?.focus(); }
+    else voice.start();
   };
 
   const send = async (override?: string) => {
@@ -304,20 +286,18 @@ function ChatBot({ userLanguage, languageCode }: { userLanguage?: string; langua
     setLoading(true);
 
     try {
-      // Build message history — skip welcome message, optionally prepend language hint
       const history: { role: string; content: string }[] = [];
       if (userLanguage && userLanguage !== 'English') {
-        history.push({ role: 'user', content: `My preferred language is ${userLanguage}. Please respond in ${userLanguage} when I write in that language.` });
-        history.push({ role: 'assistant', content: `Understood. I will respond in ${userLanguage} when you write in that language.` });
+        history.push({ role: 'user', content: `My preferred language is ${userLanguage}.` });
+        history.push({ role: 'assistant', content: `Understood, I will respond in ${userLanguage} when you write in that language.` });
       }
       [...msgs, userMsg]
         .filter(m => m.id !== 'w0')
         .forEach(m => history.push({ role: m.role, content: m.text }));
 
-      const reply = await askClaude(history);
+      const reply = await askGroq(history);
       const aMsg: Message = { id: `a${Date.now()}`, role: 'assistant', text: reply };
       setMsgs(prev => [...prev, aMsg]);
-      // Auto-read the reply aloud in the correct language
       setTimeout(() => tts.speak(aMsg.id, reply, languageCode ?? 'en-IN'), 250);
     } catch (e: any) {
       setError(e.message ?? 'Connection failed. Please try again.');
@@ -328,15 +308,13 @@ function ChatBot({ userLanguage, languageCode }: { userLanguage?: string; langua
 
   return (
     <div className="space-y-3">
-      {/* Info banner */}
       <div className="bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded-xl p-3 flex items-start gap-2">
         <Scale className="w-4 h-4 text-[#F59E0B] mt-0.5 shrink-0" />
         <p className="text-yellow-200 text-xs leading-relaxed">
-          Type or 🎙 speak your question. Replies are <strong>read aloud automatically</strong> in your language. Works in Hindi, Kannada, Tamil, Telugu, Bengali, and English.
+          Type or 🎙 speak your question. Replies are <strong>read aloud automatically</strong> in your language.
         </p>
       </div>
 
-      {/* Quick prompt chips */}
       <div className="flex flex-wrap gap-1.5">
         {QUICK_PROMPTS.map(q => (
           <button key={q} onClick={() => send(q)} disabled={loading}
@@ -346,7 +324,6 @@ function ChatBot({ userLanguage, languageCode }: { userLanguage?: string; langua
         ))}
       </div>
 
-      {/* Chat window */}
       <div className="flex flex-col bg-[#1E293B] rounded-2xl border border-gray-700 overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-[#0F172A]/60">
@@ -358,13 +335,12 @@ function ChatBot({ userLanguage, languageCode }: { userLanguage?: string; langua
               <p className="text-white font-semibold text-sm">AWAAZ Legal Assistant</p>
               <p className="text-green-400 text-[10px] flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                Online · Powered by Claude AI
+                Online · Llama 3.1 via Groq
               </p>
             </div>
           </div>
           {tts.anyPlaying && (
-            <button onClick={tts.stop}
-              className="flex items-center gap-1 px-2.5 py-1.5 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-xs active:scale-95">
+            <button onClick={tts.stop} className="flex items-center gap-1 px-2.5 py-1.5 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-xs active:scale-95">
               <Square className="w-3 h-3 fill-current" /> Stop
             </button>
           )}
@@ -384,9 +360,7 @@ function ChatBot({ userLanguage, languageCode }: { userLanguage?: string; langua
                 {m.role === 'assistant' && tts.supported && m.id !== 'w0' && (
                   <button onClick={() => tts.speak(m.id, m.text, languageCode)}
                     className="flex items-center gap-1 text-[10px] text-gray-500 hover:text-gray-300 px-1 transition-colors">
-                    {tts.isPlaying(m.id)
-                      ? <><Square className="w-2.5 h-2.5 fill-current" /> Stop</>
-                      : <><Volume2 className="w-2.5 h-2.5" /> Listen again</>}
+                    {tts.isPlaying(m.id) ? <><Square className="w-2.5 h-2.5 fill-current" /> Stop</> : <><Volume2 className="w-2.5 h-2.5" /> Listen again</>}
                   </button>
                 )}
               </div>
@@ -408,22 +382,17 @@ function ChatBot({ userLanguage, languageCode }: { userLanguage?: string; langua
           {error && (
             <div className="bg-red-900/20 border border-red-700/40 rounded-xl p-3 flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-              <div>
-                <p className="text-red-300 text-xs leading-relaxed">{error}</p>
-              </div>
+              <p className="text-red-300 text-xs leading-relaxed whitespace-pre-wrap">{error}</p>
             </div>
           )}
-
           <div ref={bottomRef} />
         </div>
 
-        {/* Voice indicator bar */}
+        {/* Voice indicator */}
         {voice.listening && (
           <div className="mx-3 mb-2 px-3 py-2 bg-red-900/20 border border-red-700/40 rounded-xl flex items-center gap-2">
             <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse shrink-0" />
-            <span className="text-red-200 text-xs flex-1 truncate italic">
-              {voice.liveText || 'Listening — speak now...'}
-            </span>
+            <span className="text-red-200 text-xs flex-1 truncate italic">{voice.liveText || 'Listening — speak now...'}</span>
             <button onClick={() => { const t = voice.stop(); if (t) send(t); }}
               className="shrink-0 text-[10px] bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600 active:scale-95">
               Send ↑
@@ -431,42 +400,33 @@ function ChatBot({ userLanguage, languageCode }: { userLanguage?: string; langua
           </div>
         )}
 
-        {/* Input row */}
+        {/* Input */}
         <div className="p-3 border-t border-gray-700 bg-[#0F172A]/40">
           <div className="flex gap-2 items-end">
-            {/* Mic button */}
             {voice.supported && (
               <button onClick={toggleVoice}
                 className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-90 shrink-0 ${voice.listening ? 'bg-red-500 text-white shadow-lg shadow-red-500/40' : 'bg-[#1E293B] border border-gray-700 text-gray-400 hover:text-[#F59E0B] hover:border-[#F59E0B]/50'}`}>
                 {voice.listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
               </button>
             )}
-
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={e => setInput(e.target.value)}
+            <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
               placeholder={voice.supported ? 'Type or tap 🎙 to speak...' : 'Type your question in any language...'}
               rows={2}
-              className="flex-1 bg-[#1E293B] text-white placeholder-gray-500 text-sm rounded-xl px-3 py-2.5 outline-none border border-gray-700 focus:border-[#F59E0B]/50 resize-none leading-relaxed"
-            />
-
+              className="flex-1 bg-[#1E293B] text-white placeholder-gray-500 text-sm rounded-xl px-3 py-2.5 outline-none border border-gray-700 focus:border-[#F59E0B]/50 resize-none leading-relaxed" />
             <button onClick={() => send()} disabled={!input.trim() || loading}
               className="w-10 h-10 bg-[#F59E0B] hover:bg-[#D97706] disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-xl flex items-center justify-center transition-all active:scale-90 shrink-0">
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </button>
           </div>
-          <p className="text-gray-600 text-[10px] mt-1.5 px-1">
-            Replies read aloud automatically · AI may make mistakes · Verify with Labour Commissioner
-          </p>
+          <p className="text-gray-600 text-[10px] mt-1.5 px-1">Replies read aloud automatically · AI may make mistakes · Verify with Labour Commissioner</p>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── FAQ item with TTS ────────────────────────────────────────────────────────
+// ─── 5. FAQ item ──────────────────────────────────────────────────────────────
 
 function FAQItem({ q, a, idx, langCode }: { q: string; a: string; idx: number; langCode?: string }) {
   const [open, setOpen] = useState(false);
@@ -484,9 +444,7 @@ function FAQItem({ q, a, idx, langCode }: { q: string; a: string; idx: number; l
           {tts.supported && (
             <button onClick={() => tts.speak(`faq${idx}`, a, 'en-IN')}
               className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-200 transition-colors">
-              {tts.isPlaying(`faq${idx}`)
-                ? <><Square className="w-3 h-3 fill-current" /> Stop</>
-                : <><Volume2 className="w-3 h-3" /> Listen</>}
+              {tts.isPlaying(`faq${idx}`) ? <><Square className="w-3 h-3 fill-current" /> Stop</> : <><Volume2 className="w-3 h-3" /> Listen</>}
             </button>
           )}
         </div>
@@ -495,25 +453,22 @@ function FAQItem({ q, a, idx, langCode }: { q: string; a: string; idx: number; l
   );
 }
 
-// ─── Worker Rights Card with TTS ─────────────────────────────────────────────
+// ─── 6. Worker Rights card ────────────────────────────────────────────────────
 
 function WorkerRightsCard({ langCode }: { langCode?: string }) {
   const tts = useTTS(langCode ?? 'en-IN');
   const rightsText = WORKER_RIGHTS.join('. ');
-
   return (
     <div className="mt-2 bg-[#1E293B] rounded-xl border border-gray-700 p-4">
-      <div className="flex items-center gap-2 mb-3 justify-between">
+      <div className="flex items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
           <Shield className="w-4 h-4 text-[#F59E0B]" />
           <p className="text-white font-semibold text-sm">Your Fundamental Rights as a Worker</p>
         </div>
         {tts.supported && (
-          <button onClick={() => tts.speak('worker-rights', rightsText, langCode)}
-            className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-gray-200 transition-colors">
-            {tts.isPlaying('worker-rights')
-              ? <><Square className="w-3 h-3 fill-current" /> Stop</>
-              : <><Volume2 className="w-3 h-3" /> Listen</>}
+          <button onClick={() => tts.speak('worker-rights', rightsText, 'en-IN')}
+            className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-gray-200 transition-colors shrink-0">
+            {tts.isPlaying('worker-rights') ? <><Square className="w-3 h-3 fill-current" /> Stop</> : <><Volume2 className="w-3 h-3" /> Listen</>}
           </button>
         )}
       </div>
@@ -528,14 +483,13 @@ function WorkerRightsCard({ langCode }: { langCode?: string }) {
   );
 }
 
-// ─── Main screen ──────────────────────────────────────────────────────────────
+// ─── 7. Main export — MUST be last ────────────────────────────────────────────
 
 export default function HelpScreen({ userLanguage, languageCode }: HelpScreenProps) {
   const [tab, setTab] = useState<'chat' | 'faq' | 'contacts'>('chat');
 
   return (
     <div className="min-h-screen bg-[#0F172A] pb-28">
-      {/* Sticky header + tabs */}
       <div className="sticky top-0 bg-[#0F172A]/95 backdrop-blur-sm border-b border-gray-800 z-10">
         <div className="px-4 pt-4 pb-1">
           <h1 className="text-lg font-bold text-white">Help & Legal Guidance</h1>
@@ -552,34 +506,22 @@ export default function HelpScreen({ userLanguage, languageCode }: HelpScreenPro
       </div>
 
       <div className="px-4 py-4">
+        {tab === 'chat' && <ChatBot userLanguage={userLanguage} languageCode={languageCode} />}
 
-        {/* ─ AI CHAT ─ */}
-        {tab === 'chat' && (
-          <ChatBot userLanguage={userLanguage} languageCode={languageCode} />
-        )}
-
-        {/* ─ FAQ ─ */}
         {tab === 'faq' && (
           <div className="space-y-3">
             <div className="flex items-center gap-2 mb-3">
               <HelpCircle className="w-5 h-5 text-[#F59E0B]" />
               <h2 className="text-white font-bold">Common Questions</h2>
             </div>
-            {FAQ.map((item, i) => (
-              <FAQItem key={i} q={item.q} a={item.a} idx={i} langCode={languageCode} />
-            ))}
-
-            {/* Rights summary card */}
+            {FAQ.map((item, i) => <FAQItem key={i} q={item.q} a={item.a} idx={i} langCode={languageCode} />)}
             <WorkerRightsCard langCode={languageCode} />
           </div>
         )}
 
-        {/* ─ CONTACTS ─ */}
         {tab === 'contacts' && (
           <div className="space-y-4">
             <p className="text-gray-400 text-sm">All numbers are <span className="text-white font-semibold">free to call</span> from any mobile phone.</p>
-
-            {/* Emergency contacts */}
             <div className="space-y-3">
               {EMERGENCY.map((c, i) => (
                 <div key={i} className="bg-[#1E293B] rounded-xl border border-gray-700 p-4 flex items-center justify-between gap-3">
@@ -599,7 +541,6 @@ export default function HelpScreen({ userLanguage, languageCode }: HelpScreenPro
               ))}
             </div>
 
-            {/* NGOs */}
             <div className="bg-[#1E293B] rounded-xl border border-gray-700 p-4">
               <div className="flex items-center gap-2 mb-3">
                 <Shield className="w-5 h-5 text-purple-400" />
@@ -608,10 +549,10 @@ export default function HelpScreen({ userLanguage, languageCode }: HelpScreenPro
               <div className="space-y-3">
                 {[
                   { name: 'Jan Sahas', desc: 'Bonded labour, trafficking, and migrant worker rights', contact: 'jansahas.net' },
-                  { name: 'SEWA', desc: "Self Employed Women's Association — women worker rights and legal aid", contact: 'sewa.org' },
+                  { name: 'SEWA', desc: "Self Employed Women's Association — women worker rights", contact: 'sewa.org' },
                   { name: 'Prayas', desc: 'Child labour and migrant worker support — Delhi NCR', contact: 'prayasIndia.org' },
-                  { name: 'District Legal Services Authority (DLSA)', desc: 'Free government-assigned lawyers — every district has one. Ask at your District Court.', contact: 'nalsa.gov.in' },
-                ].map((n, i, arr) => (
+                  { name: 'DLSA', desc: 'Free government lawyers — every district. Ask at your District Court.', contact: 'nalsa.gov.in' },
+                ].map((n, i) => (
                   <div key={i} className={i > 0 ? 'border-t border-gray-700/50 pt-3' : ''}>
                     <p className="text-white font-medium text-sm">{n.name}</p>
                     <p className="text-gray-400 text-xs mt-0.5">{n.desc}</p>
@@ -621,7 +562,6 @@ export default function HelpScreen({ userLanguage, languageCode }: HelpScreenPro
               </div>
             </div>
 
-            {/* Process guide */}
             <div className="bg-[#1E293B] rounded-xl border border-gray-700 p-4">
               <div className="flex items-center gap-2 mb-3">
                 <MessageCircle className="w-5 h-5 text-[#F59E0B]" />
@@ -636,9 +576,7 @@ export default function HelpScreen({ userLanguage, languageCode }: HelpScreenPro
                   { n: '5', t: 'Order issued', d: 'Commissioner can order full back-pay + penalty up to 10× the owed wages' },
                 ].map(({ n, t, d }) => (
                   <li key={n} className="flex items-start gap-3">
-                    <span className="w-6 h-6 rounded-full bg-[#F59E0B]/20 text-[#F59E0B] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
-                      {n}
-                    </span>
+                    <span className="w-6 h-6 rounded-full bg-[#F59E0B]/20 text-[#F59E0B] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{n}</span>
                     <div>
                       <p className="text-white text-sm font-medium">{t}</p>
                       <p className="text-gray-400 text-xs">{d}</p>
@@ -649,64 +587,7 @@ export default function HelpScreen({ userLanguage, languageCode }: HelpScreenPro
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
-}
-async function askClaude(msgs: { role: string; content: string }[]): Promise<string> {
-  const SYSTEM_PROMPT = `You are AWAAZ Legal Assistant — a free AI helping Indian migrant and construction workers understand their labour rights in India.
-
-Rules:
-- Keep answers to 3–6 sentences unless a step-by-step is needed
-- Use simple plain language; avoid jargon or explain it immediately  
-- For physical danger ALWAYS say: call 100 (police) immediately first
-- BILINGUAL FORMAT: If user writes in regional language (Hindi/Tamil/Telugu/Kannada/Bengali), respond FIRST in that regional language, then add a blank line, then add English translation with format "--- English ---" followed by English version
-- You are expert in: Payment of Wages Act 1936, BOCW Act 1996, Contract Labour Act 1970, Minimum Wages Act 1948, Employees Compensation Act 1923, Bonded Labour Act 1976, POSH Act 2013, Maternity Benefit Act 1961, Equal Remuneration Act 1976, IPC Sections 323/324/506, Industrial Employment Act`;
-
-  const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined;
-  if (!apiKey || apiKey.trim() === '') {
-    throw new Error(
-      'Groq API key not configured.\n\n' +
-      '📍 Get free API key at: https://console.groq.com\n\n' +
-      '📍 Locally: Create/edit .env.local in your project root with:\n' +
-      'VITE_GROQ_API_KEY=gsk_your-groq-key-here\n\n' +
-      '📍 Vercel: Dashboard → Settings → Environment Variables → Add VITE_GROQ_API_KEY → Redeploy'
-    );
-  }
-
-  // Add system prompt as first message
-  const messagesWithSystem = [
-    { role: 'system' as const, content: SYSTEM_PROMPT },
-    ...msgs.map(m => ({
-      role: m.role as 'user' | 'assistant',
-      content: m.content,
-    })),
-  ];
-
-  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey.trim()}`,
-    },
-    body: JSON.stringify({
-      model: 'llama-3.1-8b-instant',
-      max_tokens: 1000,
-      messages: messagesWithSystem,
-      temperature: 0.7,
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    const msg = (err as any)?.error?.message ?? '';
-    if (res.status === 401) throw new Error('Invalid Groq API key. Get a free key at https://console.groq.com and add it to Vercel Settings → Environment Variables → VITE_GROQ_API_KEY.');
-    if (res.status === 429) throw new Error('Rate limit reached — please wait a moment and try again.');
-    if (res.status === 403) throw new Error('API access denied. Check your Groq API key at https://console.groq.com.');
-    throw new Error(msg || `Groq API error ${res.status}`);
-  }
-
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content ?? 'No response received. Please try again.';
 }
