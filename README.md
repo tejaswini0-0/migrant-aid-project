@@ -169,62 +169,11 @@ The app uses a bottom navigation bar with four primary screens:
 - **My Case**: Rights and legal information screen showing analysis results
 - **Help**: Emergency contacts, FAQ, rights education, and AI chatbot
 
-Navigation state is independent of screen content, allowing users to switch between screens without losing their analysis.
-
-### 13. Progressive Web App (PWA)
-
-The app is built as a PWA for offline access and mobile installation:
-
-- **Service Worker**: Registered at app load for offline functionality
-- **Manifest File**: Includes app metadata, icons, colors, and display settings
-  - App name: "AWAAZ Voice Legal Aid App"
-  - Start URL: Application entry point for installed app
-  - Display: Standalone app mode (full screen, no browser chrome)
-  - Theme & Background Colors: Configured for dark theme
-  - Orientation: Portrait mode for mobile-first design
-  - Scope: Limited to app directory
-
-- **Mobile Meta Tags**: Optimized for mobile browsers
-  - Viewport configuration for responsive design
-  - Full-screen and status bar styling for iOS
-  - Apple mobile-web-app capability flags
-  - Safe area inset support for notched devices
-
-- **Install Prompts**: Compatible with browser install dialogs on Android and desktop
-
-### 14. Design & Accessibility
-
-**Visual Design**:
-- Dark theme optimized for low-light environments (common in migrant worker settings)
-- High-contrast color scheme (amber #F59E0B against dark background) for readability
-- Large touch targets for mobile usability (minimum 44x44 pixels)
-- Responsive layout scaling from phones to tablets
-
-**Keyboard & Screen Reader Support**:
-- Full keyboard navigation via semantic HTML
-- ARIA labels for icon-only buttons
-- TTS support for all text content
-
 **Performance**:
 - Vite-based build process for fast load times
 - React 18 with optimized rendering
 - Lucide React icons (lightweight, tree-shakeable)
 - Tailwind CSS for minimal CSS bundle size
-
-## Technical Architecture
-
-### Frontend Stack
-- **Framework**: React 18.3.1 with TypeScript
-- **Build Tool**: Vite 5.4.2
-- **Styling**: Tailwind CSS 3.4.1 with PostCSS
-- **Icons**: Lucide React 0.344.0
-- **API Client**: Supabase JS 2.57.4 (for future backend integration)
-
-### APIs & External Services
-- **Speech Recognition**: Web Speech API (browser native)
-- **Text-to-Speech**: Web Speech Synthesis API (browser native)
-- **Legal AI**: Groq API with Llama 3.1 8B model for chatbot
-- **Backend Ready**: Designed for FastAPI backend integration for advanced incident analysis
 
 ### Key Libraries & Components
 
@@ -298,7 +247,6 @@ The app is designed specifically for Indian migrant and construction workers:
 - **Cultural Context**: References Indian labor laws and procedures
 - **No Cost**: Completely free (open source architecture)
 - **Offline First**: Works without constant internet (PWA with service worker)
-- **Mobile Only**: Designed for devices workers actually use
 
 ## Use Cases
 
